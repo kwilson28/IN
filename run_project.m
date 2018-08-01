@@ -51,7 +51,7 @@ init_project;
 % %% Physio betas
 % calc_scr_ex_beta;
 % calc_emg_ex_beta; TBD
-%% calc_hrv_ex_beta; % bpm trajectories | neutral filtering
+%%% calc_hrv_ex_beta;  % bpm trajectories | neutral filtering
 %%% calc_hrv_ex_bpm;  % bpm targets for mvpa
 
 % %% fMRI betas
@@ -81,6 +81,7 @@ init_project;
 %
 % mvpa_fmri_ex_rgr_scr % unworking DRAFT
 % mvpa_fmri_ex_rgr_emg % TBD
+
 %%% mvpa_fmri_ex_gm_rgr_hrv_inter_thresh % inter-subj Gray-matter
 %%%                                      % regression.
 %%% mvpa_fmri_ex_gm_rgr_hrv_inter_all    % inter-subj Gray-matter
@@ -107,18 +108,19 @@ init_project;
 % %% STEP 11: Analysis of IN performance
 % plot_er_skill_summary % working DRAFT
 % 
-
 % %% ------------------------------------------------------------ 
-% %% STEP 12: Hyperplane analysis
-%%%haufe_ex_gm_hrv_mvpa_all_permute
-haufe_ex_gm_hrv_mvpa_thresh_permute
-
-% %% ------------------------------------------------------------ 
-% %% STEP 13: Secondary Analysis of EX physiology (Kayla paper)
+% %% STEP 12: Secondary Analysis of EX physiology (Kayla paper)
 % SCR (Scienitific Reports paper)
 % analyze_ex_scr % working DRAFT
 % analyze_ex_emg % TBD
 % analyze_ex_hrv_mvpa % working DRAFT
+
+
+% %% ------------------------------------------------------------ 
+% %% STEP 13: Hyperplane analysis
+%%%haufe_ex_gm_hrv_mvpa_all_permute
+haufe_ex_gm_hrv_mvpa_thresh_permute
+
 
 
 toc
