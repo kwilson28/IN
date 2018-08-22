@@ -24,13 +24,13 @@ init_project;
 
 %% ------------------------------------------------------------
 %% STEP 2: Clear and reconstruct the project data folder
-%% clean_project;
+clean_project;
 
 %% ------------------------------------------------------------
 %% STEP 3: Preprocess raw data (wrangling, filtering, formatting)
 
 %%  fMRI data
-%%% preprocess_fmri;
+preprocess_fmri;
 preprocess_mask;
 % - preprocess_fd;
 
