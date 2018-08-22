@@ -18,19 +18,19 @@ logger(['*************************************************'],proj.path.logfile);
 
 %% Set-up Directory Structure for fMRI betas
 if(proj.flag.clean_build)
-    disp(['Removing ',proj.path.mvpa_fmri_ex_gs_cls]);
-    eval(['! rm -rf ',proj.path.mvpa_fmri_ex_gs_cls]);
-    disp(['Creating ',proj.path.mvpa_fmri_ex_gs_cls]);
-    eval(['! mkdir ',proj.path.mvpa_fmri_ex_gs_cls]);
+    disp(['Removing ',proj.path.mvpa.fmri_ex_gs_cls]);
+    eval(['! rm -rf ',proj.path.mvpa.fmri_ex_gs_cls]);
+    disp(['Creating ',proj.path.mvpa.fmri_ex_gs_cls]);
+    eval(['! mkdir ',proj.path.mvpa.fmri_ex_gs_cls]);
 end
 
 %% ----------------------------------------
 %% Load labels;
-v_label = load([proj.path.trg,'stim_v_labs.txt']);
-a_label = load([proj.path.trg,'stim_a_labs.txt']);
-label_id = load([proj.path.trg,'stim_ids.txt']);
-v_score = load([proj.path.trg,'stim_v_scores.txt']);
-a_score = load([proj.path.trg,'stim_a_scores.txt']);
+v_label = load([proj.path.trg.ex,'stim_v_labs.txt']);
+a_label = load([proj.path.trg.ex,'stim_a_labs.txt']);
+label_id = load([proj.path.trg.ex,'stim_ids.txt']);
+v_score = load([proj.path.trg.ex,'stim_v_scores.txt']);
+a_score = load([proj.path.trg.ex,'stim_a_scores.txt']);
 
 %% ----------------------------------------
 %% load subjs
@@ -54,14 +54,14 @@ for i = 1:numel(subjs)
     logger([subj_study,':',name],proj.path.logfile);
 
     %% Load gray matter mask 
-    gm_nii = load_nii([proj.path.gm_mask,subj_study,'.',name,'.gm.nii']);
+    gm_nii = load_nii([proj.path.mri.gm_mask,subj_study,'.',name,'.gm.nii']);
     mask = double(gm_nii.img);
     brain_size=size(mask);
     mask = reshape(mask,brain_size(1)*brain_size(2)*brain_size(3),1);
     in_brain=find(mask==1);  
 
     %% Load beta-series
-    base_nii = load_nii([proj.path.fmri_ex_beta,subj_study,'_',name,'_lss.nii']);
+    base_nii = load_nii([proj.path.betas.fmri_ex_beta,subj_study,'_',name,'_lss.nii']);
     brain_size = size(base_nii.img);
     
     %% Vectorize the base image
@@ -76,7 +76,7 @@ for i = 1:numel(subjs)
     subj_i = repmat(i,numel(v_label),1);
     
     %% Subselect extrinsic data
-    ex_id = find(label_id==proj.param.ex_id);
+    ex_id = find(label_id==proj.param.trg.ex_id);
     ex_img = subj_img(ex_id,:);
     ex_subj_id = subj_id(ex_id,1);
     ex_v_label = v_label(ex_id,1);
@@ -99,11 +99,11 @@ for i = 1:numel(subjs)
         
         %% ----------------------------------------
         %% Classify extrinsic VALENCE examples
-        for j=1:proj.param.mvpa_n_resamp
+        for j=1:proj.param.mvpa.n_resamp
             
             %% Fit the data space
             [~,~,v_tst_hd,~,v_cls_stats] = classify_loocv(ex_img, ...
-                                                          ex_v_label,ex_subj_id,id, proj.param.mvpa_kernel);
+                                                          ex_v_label,ex_subj_id,id, proj.param.mvpa.kernel);
             
             %% Store results
             prds.v_cls_acc = [prds.v_cls_acc;cell2mat(v_cls_stats.tst_acc)];
@@ -118,11 +118,11 @@ for i = 1:numel(subjs)
 
         %% ----------------------------------------
         %% Classify extrinsic AROUSAL examples
-        for j=1:proj.param.mvpa_n_resamp
+        for j=1:proj.param.mvpa.n_resamp
 
             %% Fit the data space            
             [~,~,a_tst_hd,~,a_cls_stats] = classify_loocv(ex_img, ...
-                                                          ex_a_label,ex_subj_id,id, proj.param.mvpa_kernel);
+                                                          ex_a_label,ex_subj_id,id, proj.param.mvpa.kernel);
             
             %% Store results
             prds.a_cls_acc = [prds.a_cls_acc;cell2mat(a_cls_stats.tst_acc)];
@@ -132,7 +132,7 @@ for i = 1:numel(subjs)
 
         %% ----------------------------------------
         %% Save out results
-        save([proj.path.mvpa_fmri_ex_gs_cls,subj_study,'_',name,'_prds.mat'],'prds');
+        save([proj.path.mvpa.fmri_ex_gs_cls,subj_study,'_',name,'_prds.mat'],'prds');
 
         % debug
         all_a_cls_acc = [all_a_cls_acc;mean(mean(prds.a_cls_acc,1))];

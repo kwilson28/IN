@@ -11,8 +11,6 @@
     OTHER CONTRIBUTORS:
 # ----------------------------------------
 # ----------------------------------------
-Kayla Wilson (2018)
-    heart rate variability
 
 Anthony Privratsky (2018)
     skin conductance response filtering
@@ -104,42 +102,46 @@ arousal).
 	      	  # by proj.path.data in the proj.mat 
     matlab_reset.m # clears the workspace and resets matlab's
                    # path to the initial launch state
+
+    /design
+        # Stores critical task design data files
+ 	# which maintain all of the experiment
+	# designs (*.mat files currently)
+    /doc
+        # where project documentation is stored    
+    /fig
+        # where plots are stored
+    /log
+        # where statistical findings are stored
     /source
         init_project.m  # all project parameters
     	clean_project.m # wipes the directory storing
     			# intermediate files
-        /preprocess
-            # preprocessing scripts for
-	    # all data types
+        /analysis
+	    # contains code for statistical tests
+	    # and plotting
         /beta_series
 	    # beta_series extraction 
 	    # scripts for all data types
-        /mvpa
-	    # whole-brain and dimensionally
-	    # reduces MVPA predictions of
-	    # affect
+	/haufe
+ 	    # contains code for constructing permuation
+	    # tested Haufe-transformed encoding parameters
         /in_ctrl
 	    # conducts dynamic analysis of 
 	    # MVPA predictions for the IN
 	    # tasks (1st, 2nd deriv calcs 
 	    # and calculations of errors
-        /analysis
-	    # contains code for statistical tests
-	    # and plotting
-    /design
-        # Stores critical task design data files
- 	# which maintain all of the experiment
-	# designs (*.mat files currently)
+        /mvpa
+	    # whole-brain and dimensionally
+	    # reduces MVPA predictions of
+	    # affect
+        /preprocess
+            # preprocessing scripts for
+	    # all data types
     /subj_lists
         # stores text files listing the included
 	# subjects for each study being used in
 	# this project analysis
-    /log
-        # where statistical findings are stored
-    /fig
-        # where plots are stored
-    /doc
-        # where project documentation is stored    
 
 # ----------------------------------------
 # ----------------------------------------
@@ -151,7 +153,7 @@ matlab (Tested only for R2016B)
     - statistical analysis toolbox
     - parallel computing toolbox
 
-ANFI (Version AFNI_16.3.20)
+ANFI (Version AFNI_18.2.06)
 
 FSL (5.0.9)
 
@@ -160,7 +162,6 @@ python (2.7)
     - scipy
     - matplotlib
     - pandas
-
 
 
 # ----------------------------------------

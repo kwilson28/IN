@@ -42,7 +42,7 @@ for i = 1:numel(subjs)
 
     try
         %% Load IN trajectory structures
-        load([proj.path.in_ctrl,subj_study,'_',name,'_prds.mat']);
+        load([proj.path.ctrl.in_ctrl,subj_study,'_',name,'_prds.mat']);
     catch
         % do nothing
         disp(['Could not find load prds for: ',subj_study,'_',name]);

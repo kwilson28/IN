@@ -13,10 +13,10 @@ load('proj.mat');
 
 %% Set-up Directory Structure for SCR
 if(proj.flag.clean_build)
-    disp(['Removing ',proj.path.scr_beta]);
-    eval(['! rm -rf ',proj.path.scr_beta]);
-    disp(['Creating ',proj.path.scr_beta]);
-    eval(['! mkdir ',proj.path.scr_beta]);
+    disp(['Removing ',proj.path.betas.scr_beta]);
+    eval(['! rm -rf ',proj.path.betas.scr_beta]);
+    disp(['Creating ',proj.path.betas.scr_beta]);
+    eval(['! mkdir ',proj.path.betas.scr_beta]);
 end
 
 %% Load designs
@@ -24,27 +24,27 @@ load([proj.path.design,'run1_design.mat']);
 load([proj.path.design,'run2_design.mat']);
 
 %% Extract Extrinsic Stimulation Times (shifted for R5 upgrade)
-run1_ex_stim_times = run1_design.ex_time_seq'+proj.param.r5_shift; 
-run2_ex_stim_times = run2_design.ex_time_seq'+proj.param.r5_shift;
+run1_ex_stim_times = run1_design.ex_time_seq'+proj.param.trg.r5_shift; 
+run2_ex_stim_times = run2_design.ex_time_seq'+proj.param.trg.r5_shift;
 
 %% Extract Intrinsic Stimulation Times (shifted for R5 upgrade)
-run1_in_stim_times = run1_design.in_time_seq'+proj.param.r5_shift;
-run2_in_stim_times = run2_design.in_time_seq'+proj.param.r5_shift;
+run1_in_stim_times = run1_design.in_time_seq'+proj.param.trg.r5_shift;
+run2_in_stim_times = run2_design.in_time_seq'+proj.param.trg.r5_shift;
 
 %% Extract Feel Stimuluation Times
 run1_feel_stim_times = [];
 for i=1:numel(run1_in_stim_times)
-    run1_feel_stim_times = [run1_feel_stim_times,proj.param.feel_times+run1_in_stim_times(i)];
+    run1_feel_stim_times = [run1_feel_stim_times,proj.param.trg.feel_times+run1_in_stim_times(i)];
 end
 
 run2_feel_stim_times = [];
 for i=1:numel(run2_in_stim_times)
-    run2_feel_stim_times = [run2_feel_stim_times,proj.param.feel_times+run2_in_stim_times(i)];
+    run2_feel_stim_times = [run2_feel_stim_times,proj.param.trg.feel_times+run2_in_stim_times(i)];
 end
 
 %% build design(s)
-[prime_ex_1 other_ex_1] = scr_dsgn_preproc(proj,proj.param.n_trs_id1,run1_ex_stim_times);
-[prime_ex_2 other_ex_2] = scr_dsgn_preproc(proj,proj.param.n_trs_id2,run2_ex_stim_times);
+[prime_ex_1 other_ex_1] = scr_dsgn_preproc(proj,proj.param.mri.n_trs_id1,run1_ex_stim_times);
+[prime_ex_2 other_ex_2] = scr_dsgn_preproc(proj,proj.param.mri.n_trs_id2,run2_ex_stim_times);
 
 %% ----------------------------------------
 %% TICKET
@@ -79,12 +79,12 @@ for i=1:numel(subjs)
 
     %% -----------------------------------------
     %% LSA of scr signal (not preferred to LSS)
-    %% path = [proj.path.scr_clean,subj_study,'_',name,'_Identify_run_1.mat'];
+    %% path = [proj.path.physio.scr_clean,subj_study,'_',name,'_Identify_run_1.mat'];
     %% load(path);
     %% mdl_ex_1 = regstats(scr,prime_ex_1');
     %% betas1 = zscore(mdl_ex_1.beta(2:end)');
     %% 
-    %% path = [proj.path.scr_clean,subj_study,'_',name,'_Identify_run_2.mat'];
+    %% path = [proj.path.physio.scr_clean,subj_study,'_',name,'_Identify_run_2.mat'];
     %% load(path);
     %% mdl_ex_2 = regstats(scr,prime_ex_2');
     %% betas2 = zscore(mdl_ex_1.beta(2:end)');
@@ -95,7 +95,7 @@ for i=1:numel(subjs)
     %% LSS of scr signal (Mumford, 2012) - Identify 1
     ex_betas.id1 = [];
     try
-        path = [proj.path.scr_clean,subj_study,'_',name,'_Identify_run_1.mat'];
+        path = [proj.path.physio.scr_clean,subj_study,'_',name,'_Identify_run_1.mat'];
         load(path);
 
         for j=1:size(prime_ex_1)
@@ -116,7 +116,7 @@ for i=1:numel(subjs)
     %% LSS of scr signal (Mumford, 2012) - Identify 2
     ex_betas.id2 = [];
     try
-        path = [proj.path.scr_clean,subj_study,'_',name,'_Identify_run_2.mat'];
+        path = [proj.path.physio.scr_clean,subj_study,'_',name,'_Identify_run_2.mat'];
         load(path);
 
         for j=1:size(prime_ex_2)
@@ -135,7 +135,7 @@ for i=1:numel(subjs)
 
     %% ----------------------------------------
     %% SAVE Individual Betas
-    save([proj.path.scr_beta,subj_study,'_',name,'_ex_betas.mat'],'ex_betas');
+    save([proj.path.betas.scr_beta,subj_study,'_',name,'_ex_betas.mat'],'ex_betas');
 
     % debug
     if(~isempty(ex_betas.id1) & ~isempty(ex_betas.id2))

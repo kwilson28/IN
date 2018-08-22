@@ -13,10 +13,10 @@ load('proj.mat');
 
 %% Set-up Directory Structure for SCR
 if(proj.flag.clean_build)
-    disp(['Removing ',proj.path.scr_clean]);
-    eval(['! rm -rf ',proj.path.scr_clean]);
-    disp(['Creating ',proj.path.scr_clean]);
-    eval(['! mkdir ',proj.path.scr_clean]);
+    disp(['Removing ',proj.path.physio.scr_clean]);
+    eval(['! rm -rf ',proj.path.physio.scr_clean]);
+    disp(['Creating ',proj.path.physio.scr_clean]);
+    eval(['! mkdir ',proj.path.physio.scr_clean]);
 end
 
 %% Create the subjects to be analyzed
@@ -35,21 +35,22 @@ for i=1:numel(subjs)
 
     %% Define input/outputs paths
     in_path = [proj.path.raw_data,subj_study,'/',proj.path.raw_physio,'/'];
-    out_path = [proj.path.scr_clean];
+    out_path = [proj.path.physio.scr_clean];
 
     %% ----------------------------------------
     %% Build Identify 1 SCR
     %% load scr
     try
-        path = [in_path,subj_study,'_',name,'/',subj_study,'_',name,'_',proj.path.name_id1,'.mat'];
+        path = [in_path,subj_study,'_',name,'/',subj_study,'_',name,'_',proj.path.task.name_id1,'.mat'];
         physio_raw = load(path);
         
         %% process scr
-        n_trs = proj.param.n_trs_id1;
+        n_trs = proj.param.mri.n_trs_id1;
         scr = scr_preproc(proj,n_trs,physio_raw.data);
         
         %% save scr
-        save([out_path,subj_study,'_',name,'_',proj.path.name_id1,'.mat'],'scr');
+        save([out_path,subj_study,'_',name,'_',proj.path.task.name_id1,'.mat'],'scr');
+
     catch
         disp(['Processing Error: SCR of Identify run 1: ',path]);
     end
@@ -57,15 +58,15 @@ for i=1:numel(subjs)
     %% ----------------------------------------
     %% Build Identify 2 SCR
     try
-        path = [in_path,subj_study,'_',name,'/',subj_study,'_',name,'_',proj.path.name_id2,'.mat'];
+        path = [in_path,subj_study,'_',name,'/',subj_study,'_',name,'_',proj.path.task.name_id2,'.mat'];
         physio_raw = load(path);
         
         %% process scr
-        n_trs = proj.param.n_trs_id2;
+        n_trs = proj.param.mri.n_trs_id2;
         scr = scr_preproc(proj,n_trs,physio_raw.data);
         
         %% save scr
-        save([out_path,subj_study,'_',name,'_',proj.path.name_id2,'.mat'],'scr');
+        save([out_path,subj_study,'_',name,'_',proj.path.task.name_id2,'.mat'],'scr');
     catch
         disp(['Processing Error: SCR of Identify run 2: ',path]);
     end
@@ -73,15 +74,15 @@ for i=1:numel(subjs)
     %% ----------------------------------------
     %% Build Rest SCR
     try
-        path = [in_path,subj_study,'_',name,'/',subj_study,'_',name,'_',proj.path.name_rest,'.mat'];
+        path = [in_path,subj_study,'_',name,'/',subj_study,'_',name,'_',proj.path.task.name_rest,'.mat'];
         physio_raw = load(path);
         
         %% process scr
-        n_trs = proj.param.n_trs_rest;
+        n_trs = proj.param.mri.n_trs_rest;
         scr = scr_preproc(proj,n_trs,physio_raw.data);
         
         %% save scr
-        save([out_path,subj_study,'_',name,'_',proj.path.name_rest,'.mat'],'scr');
+        save([out_path,subj_study,'_',name,'_',proj.path.task.name_rest,'.mat'],'scr');
     catch
         disp(['Processing Error: SCR of Rest: ',path]);
     end

@@ -14,19 +14,19 @@ load('proj.mat');
 %% ----------------------------------------
 %% Set-up Directory Structure for fMRI betas
 if(proj.flag.clean_build)
-    disp(['Removing ',proj.path.in_ctrl]);
-    eval(['! rm -rf ',proj.path.in_ctrl]);
-    disp(['Creating ',proj.path.in_ctrl]);
-    eval(['! mkdir ',proj.path.in_ctrl]);
+    disp(['Removing ',proj.path.ctrl.in_ctrl]);
+    eval(['! rm -rf ',proj.path.ctrl.in_ctrl]);
+    disp(['Creating ',proj.path.ctrl.in_ctrl]);
+    eval(['! mkdir ',proj.path.ctrl.in_ctrl]);
 end
 
 %% ----------------------------------------
 %% Load labels;
-v_label = load([proj.path.trg,'stim_v_labs.txt']);
-a_label = load([proj.path.trg,'stim_a_labs.txt']);
-label_id = load([proj.path.trg_in,'stim_ids.txt']); %note change
-v_score = load([proj.path.trg,'stim_v_scores.txt']);
-a_score = load([proj.path.trg,'stim_a_scores.txt']);
+v_label = load([proj.path.trg.ex,'stim_v_labs.txt']);
+a_label = load([proj.path.trg.ex,'stim_a_labs.txt']);
+label_id = load([proj.path.trg.in,'stim_ids.txt']); %note change
+v_score = load([proj.path.trg.ex,'stim_v_scores.txt']);
+a_score = load([proj.path.trg.ex,'stim_a_scores.txt']);
 
 %% ----------------------------------------
 %% load subjs
@@ -42,14 +42,14 @@ for i = 1:numel(subjs)
     id = subjs{i}.id;
 
     %% Load gray matter mask 
-    gm_nii = load_nii([proj.path.gm_mask,subj_study,'.',name,'.gm.nii']);
+    gm_nii = load_nii([proj.path.mri.gm_mask,subj_study,'.',name,'.gm.nii']);
     mask = double(gm_nii.img);
     brain_size=size(mask);
     mask = reshape(mask,brain_size(1)*brain_size(2)*brain_size(3),1);
     in_brain=find(mask==1);  
 
     %% Load beta-series
-    path = [proj.path.fmri_in_beta,subj_study,'_',name,'_lss.nii'];
+    path = [proj.path.betas.fmri_in_beta,subj_study,'_',name,'_lss.nii'];
     base_nii = load_nii(path);
     brain_size = size(base_nii.img);
 
@@ -80,8 +80,8 @@ for i = 1:numel(subjs)
             disp([subj_study,'_',name]);
 
             %% Load SVM models
-            load([proj.path.mvpa_fmri_ex_gm_cls,subj_study,'_',name,'_v_model.mat']);
-            load([proj.path.mvpa_fmri_ex_gm_cls,subj_study,'_',name,'_a_model.mat']);
+            load([proj.path.mvpa.fmri_ex_gm_cls,subj_study,'_',name,'_v_model.mat']);
+            load([proj.path.mvpa.fmri_ex_gm_cls,subj_study,'_',name,'_a_model.mat']);
             
             %% ----------------------------------------
             %% predict IN task using EX-based models
@@ -123,7 +123,7 @@ for i = 1:numel(subjs)
         end
 
         %% Save out prediction structure
-        save([proj.path.in_ctrl,subj_study,'_',name,'_prds.mat'],'prds');
+        save([proj.path.ctrl.in_ctrl,subj_study,'_',name,'_prds.mat'],'prds');
 
     end
 

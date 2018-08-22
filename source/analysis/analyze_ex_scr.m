@@ -24,15 +24,15 @@ subjs = load_subjs(proj);
 
 %% ----------------------------------------
 %% Load labels;
-v_label = load([proj.path.trg,'stim_v_labs.txt']);
-a_label = load([proj.path.trg,'stim_a_labs.txt']);
-label_id = load([proj.path.trg,'stim_ids.txt']);
-v_score = load([proj.path.trg,'stim_v_scores.txt']);
-a_score = load([proj.path.trg,'stim_a_scores.txt']);
+v_label = load([proj.path.trg.ex,'stim_v_labs.txt']);
+a_label = load([proj.path.trg.ex,'stim_a_labs.txt']);
+label_id = load([proj.path.trg.ex,'stim_ids.txt']);
+v_score = load([proj.path.trg.ex,'stim_v_scores.txt']);
+a_score = load([proj.path.trg.ex,'stim_a_scores.txt']);
 
 %% Adjust for extrinsic presentations
-v_score = v_score(find(label_id==proj.param.ex_id));
-a_score = a_score(find(label_id==proj.param.ex_id));
+v_score = v_score(find(label_id==proj.param.trg.ex_id));
+a_score = a_score(find(label_id==proj.param.trg.ex_id));
 
 figure(1)
 set(gcf,'color','w');
@@ -52,7 +52,7 @@ for i = 1:numel(subjs)
     disp([subj_study,'_',name]);
 
     try
-        load([proj.path.scr_beta,subj_study,'_',name,'_ex_betas.mat']);
+        load([proj.path.betas.scr_beta,subj_study,'_',name,'_ex_betas.mat']);
     catch
         disp('    Could not find scr beta file for processing.');
     end
@@ -89,4 +89,4 @@ for i = 1:numel(subjs)
 end
 
 [h p ci stat] = ttest(indv_b(:,2));
-disp(['b ci=[',ci(1),' ',ci(2),']']);
+disp(['b ci=[',num2str(ci(1)),' ',num2str(ci(2)),']']);
