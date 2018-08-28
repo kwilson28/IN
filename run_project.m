@@ -36,6 +36,7 @@ preprocess_mask;
 
 %% Physio data
 preprocess_scr; 
+% - preprocess_hrv; 
 % - preprocess_emg;
  
 %% Cognitive data
@@ -76,7 +77,7 @@ mvpa_fmri_ex_gm_cls % intra-subj whole-brain GM MVPA classifications
 
 %% ------------------------------------------------------------
 %% STEP 7: Conduct MVPA for Secondary Measures
-mvpa_fmri_ex_rgr_scr % unworking DRAFT
+%%% mvpa_fmri_ex_rgr_scr % unworking DRAFT
 
 %% ------------------------------------------------------------ 
 %% STEP 8: Format project design for IN afni-based beta-series

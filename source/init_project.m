@@ -66,7 +66,7 @@ eval(['! rm ',proj.path.logfile]); % clear at initialization
 
 %% ----------------------------------------
 %% Data Output Directory (All top-level names)
-proj.path.mri.name = 'mri/';
+roj.path.mri.name = 'mri/';
 proj.path.physio.name = 'physio/';
 proj.path.betas.name = 'beta_series/';
 proj.path.trg.name = 'target/';
@@ -191,11 +191,11 @@ proj.param.physio.hz_emg = 2000;
 proj.param.physio.hz_hr = 2000;
 
 %% SCR analysis parameters
-proj.param.physio.filt_scr_med_samp = 0.01; %(Bach 2015)
-proj.param.physio.filt_scr_high = 0.0159; %halfway between .05 and .0159
+proj.param.physio.scr.filt_med_samp = 0.01; %(Bach 2015)
+proj.param.physio.scr.filt_high = 0.0159; %halfway between .05 and .0159
                                    %(Staib 2015)
-proj.param.physio.filt_scr_low = 5;
-proj.param.physio.filt_scr_type = 2; 
+proj.param.physio.scr.filt_low = 5;
+proj.param.physio.scr.filt_type = 2; 
 
 %% MVPA parameters
 proj.param.mvpa.kernel = 'linear';
