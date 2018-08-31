@@ -44,7 +44,7 @@ The purpose of this code is to perform the following tasks:
 data for the project using best practices (and document literature of
 each step).
 
-2) Construct beta-series (Rissma, 2004) features for each data type
+2) Construct beta-series (Rissman, 2004) features for each data type
 where relevant (fMRI,SCR,facial EMG,HRV, etc).
 
 3) Predict cognitive (i.e., emotion) and physiological (i.e., SCR,
@@ -91,7 +91,7 @@ arousal).
 # ----------------------------------------
 
 /IN
-    run_project.m # the master script which sequentially
+    run_project.m  # the master script which sequentially
     		  # calls all supporting scripts.  If the
 	      	  # project executes correctly then the 
 	      	  # log directory will contain a textual
@@ -101,7 +101,7 @@ arousal).
 	      	  # will be stored at the path location specified
 	      	  # by proj.path.data in the proj.mat 
     matlab_reset.m # clears the workspace and resets matlab's
-                   # path to the initial launch state
+                  # path to the initial launch state
 
     /design
         # Stores critical task design data files
@@ -157,7 +157,7 @@ ANFI (Version AFNI_18.2.06)
 
 FSL (5.0.9)
 
-python (2.7)
+python (2.7) # HRV analysis only (for now)
     - numpy	
     - scipy
     - matplotlib
@@ -204,10 +204,5 @@ Dependent. Front. Human Neuroscience, 2018;
 12:262. doi.org/10.3389/fnhum.2018.00262.
 
 	https://www.frontiersin.org/articles/10.3389/fnhum.2018.00262/full
-
-
-**************
-*** TICKET ***
-**************
 
 
