@@ -10,7 +10,7 @@
 
 %% ------------------------------------------------------------
 %% Clean up matlab environment
-matlab_reset; % debug
+matlab_reset;
 
 tic
 
