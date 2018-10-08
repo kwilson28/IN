@@ -48,7 +48,6 @@ proj.path.data = [proj.path.home,'data/',proj.path.name,'/'];
 proj.path.log =[proj.path.code,'log/'];
 proj.path.fig = [proj.path.code,'fig/'];
 
-
 %% ----------------------------------------
 %% TICKET: Refactor output paths by data
 %% mri[raw, i.e. clean and gm], state, scr, hrv, emg
@@ -78,15 +77,20 @@ proj.path.ctrl.name = 'ctrl/';
 %% Specific Output Paths
 
 %% fMRI paths (all)
-proj.path.mri.mri_clean = [proj.path.data,proj.path.mri.name,'mri_clean/'];
-proj.path.mri.gm_mask = [proj.path.data,proj.path.mri.name,'gm_mask/'];
-proj.path.betas.fmri_ex_beta = [proj.path.data,proj.path.betas.name,'fmri_ex_beta/'];
-proj.path.betas.fmri_in_beta = [proj.path.data,proj.path.betas.name,'fmri_in_beta/'];
+proj.path.mri.mri_clean = [proj.path.data,proj.path.mri.name, ...
+                    'mri_clean/'];
+proj.path.mri.gm_mask = [proj.path.data,proj.path.mri.name, ...
+                    'gm_mask/'];
+proj.path.betas.fmri_ex_beta = [proj.path.data, ...
+                    proj.path.betas.name,'fmri_ex_beta/'];
+proj.path.betas.fmri_in_beta = [proj.path.data, ...
+                    proj.path.betas.name,'fmri_in_beta/'];
 
 %% SCR paths (all)
-proj.path.physio.scr_clean = [proj.path.data,proj.path.physio.name,'scr_clean/'];
+proj.path.physio.scr_clean = [proj.path.data, ...
+                    proj.path.physio.name,'scr_clean/'];
 proj.path.betas.scr_beta = [proj.path.data,proj.path.betas.name,'scr_beta/']; %ex and in put in
-                                                                         %the same directory
+                                                                              %the same directory
 %% EMG/HRV paths (all)
 %TBD
 
@@ -124,13 +128,15 @@ proj.param.mri.scans = 'run1 run2';
 proj.param.mri.rest_scans = 'run1';
 
 %% *** Annoying extra parameter (silently swear at Philips software
-%% engineers) ***  This shift is due to manner in which the design was
+%% engineers) ***  This shift is due to manner in which the design
+%% was
 %% orginally constructed to accomodate the real-time
 %% processing pipeline.  Prior to the Philips R5 upgrade
 %% we were dropping 4 inital TRs, so the design built this in.
 %% After the R5 upgrade we were dropping zero TRs but the
 %% first TR is processed strangely and so is skipped. To
-%% adjust for this we shift the design earlier in time by 3*TRs (TR=2s).
+%% adjust for this we shift the design earlier in time by 3*TRs
+%% (TR=2s).
 %% Basic problem is that the design assumed an 18 transient period
 %% at the start of the identification runs which changed to 12 s
 %% following R5 upgrades (shift was introduced to keep original
@@ -192,8 +198,9 @@ proj.param.physio.hz_hr = 2000;
 
 %% SCR analysis parameters
 proj.param.physio.scr.filt_med_samp = 0.01; %(Bach 2015)
-proj.param.physio.scr.filt_high = 0.0159; %halfway between .05 and .0159
-                                   %(Staib 2015)
+proj.param.physio.scr.filt_high = 0.0159; %halfway between .05 and
+                                          %.0159
+                                          %(Staib 2015)
 proj.param.physio.scr.filt_low = 5;
 proj.param.physio.scr.filt_type = 2; 
 
