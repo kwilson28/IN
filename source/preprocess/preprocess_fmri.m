@@ -29,7 +29,7 @@ for i=1:numel(subjs)
     %% Get data from raw and formatted into the correct name convention
     dlmwrite([proj.path.code,'tmp/home_path.txt'],proj.path.home,'');
     dlmwrite([proj.path.code,'tmp/raw_path.txt'],proj.path.raw_data,'');
-    dlmwrite([proj.path.code,'tmp/lib_path.txt'],proj.path.kablab,'');
+    dlmwrite([proj.path.code,'tmp/lib_path.txt'],proj.path.tools.kablab,'');
     dlmwrite([proj.path.code,'tmp/project_name.txt'],proj.path.name,'');
 
     %% Get preprocessing params

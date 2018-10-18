@@ -18,14 +18,14 @@ proj = struct;
 
 %% ----------------------------------------
 %% Link tools
-proj.path.kablab = '/home/kabush/lib/kablab/';
-addpath(genpath(proj.path.kablab));
+proj.path.tools.kablab = '/home/kabush/lib/kablab/';
+addpath(genpath(proj.path.tools.kablab));
 
-proj.path.scralyze = '/home/kabush/lib/scralyze/';
-addpath(genpath(proj.path.scralyze));
+proj.path.tools.scralyze = '/home/kabush/lib/scralyze/';
+addpath(genpath(proj.path.tools.scralyze));
 
-proj.path.export_fig = '/home/kabush/lib/export_fig/'
-addpath(genpath(proj.path.export_fig));
+proj.path.tools.export_fig = '/home/kabush/lib/export_fig/';
+addpath(genpath(proj.path.tools.export_fig));
 
 %% ----------------------------------------
 %% Project Flag Definitions
@@ -65,7 +65,7 @@ eval(['! rm ',proj.path.logfile]); % clear at initialization
 
 %% ----------------------------------------
 %% Data Output Directory (All top-level names)
-roj.path.mri.name = 'mri/';
+proj.path.mri.name = 'mri/';
 proj.path.physio.name = 'physio/';
 proj.path.betas.name = 'beta_series/';
 proj.path.trg.name = 'target/';
@@ -129,15 +129,13 @@ proj.param.mri.rest_scans = 'run1';
 
 %% *** Annoying extra parameter (silently swear at Philips software
 %% engineers) ***  This shift is due to manner in which the design
-%% was
-%% orginally constructed to accomodate the real-time
+%% was orginally constructed to accomodate the real-time
 %% processing pipeline.  Prior to the Philips R5 upgrade
 %% we were dropping 4 inital TRs, so the design built this in.
 %% After the R5 upgrade we were dropping zero TRs but the
 %% first TR is processed strangely and so is skipped. To
 %% adjust for this we shift the design earlier in time by 3*TRs
-%% (TR=2s).
-%% Basic problem is that the design assumed an 18 transient period
+%% (TR=2s). Basic problem is that the design assumed an 18 transient period
 %% at the start of the identification runs which changed to 12 s
 %% following R5 upgrades (shift was introduced to keep original
 %% design files intact (possibly bad decision in the long run)
@@ -206,7 +204,7 @@ proj.param.physio.scr.filt_type = 2;
 
 %% MVPA parameters
 proj.param.mvpa.kernel = 'linear';
-proj.param.mvpa.n_resamp = 1; % should be >= 30
+proj.param.mvpa.n_resamp = 30; % should be >= 30
 
 %% Haufe parameters
 proj.param.haufe.npermute = 480;
