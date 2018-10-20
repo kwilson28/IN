@@ -53,91 +53,99 @@ for i = 1:numel(subjs)
     %% log
     logger([subj_study,':',name],proj.path.logfile);
 
-    %% Load gray matter mask 
-    gm_nii = load_nii([proj.path.mri.gm_mask,subj_study,'.',name,'.gm.nii']);
-    mask = double(gm_nii.img);
-    brain_size=size(mask);
-    mask = reshape(mask,brain_size(1)*brain_size(2)*brain_size(3),1);
-    in_brain=find(mask==1);  
+    try
 
-    %% Load beta-series
-    base_nii = load_nii([proj.path.betas.fmri_ex_beta,subj_study,'_',name,'_lss.nii']);
-    brain_size = size(base_nii.img);
-    
-    %% Vectorize the base image
-    base_img = vec_img_2d_nii(base_nii);
-    base_img = reshape(base_img,brain_size(1)*brain_size(2)*brain_size(3),brain_size(4));
-
-    %% Concatenate the MASKED base image
-    subj_img = base_img(in_brain,:)';
-    
-    %% Concatenate all label/subj identifiers
-    subj_id = repmat(id,numel(v_label),1);
-    subj_i = repmat(i,numel(v_label),1);
-    
-    %% Subselect extrinsic data
-    ex_id = find(label_id==proj.param.trg.ex_id);
-    ex_img = subj_img(ex_id,:);
-    ex_subj_id = subj_id(ex_id,1);
-    ex_v_label = v_label(ex_id,1);
-    ex_a_label = a_label(ex_id,1);
-
-    %% Perform Gram-Schmidt on data
-    [~,ex_img] = gram_schmidt(ex_img);
-
-    %% Peform quality check of generated features
-    qlty = check_gs_img_qlty(ex_img);
-
-    if(qlty.ok)
-
-        %% Initialize the prediction structure of this subject
-        prds = struct();
-        prds.v_cls_acc = [];
-        prds.v_cls_hd = [];
-        prds.a_cls_acc = [];
-        prds.a_cls_hd = [];
+        %% Load gray matter mask 
+        gm_nii = load_nii([proj.path.mri.gm_mask,subj_study,'.',name,'.gm.nii']);
+        mask = double(gm_nii.img);
+        brain_size=size(mask);
+        mask = reshape(mask,brain_size(1)*brain_size(2)*brain_size(3),1);
+        in_brain=find(mask==1);  
         
-        %% ----------------------------------------
-        %% Classify extrinsic VALENCE examples
-        for j=1:proj.param.mvpa.n_resamp
+        %% Load beta-series
+        base_nii = load_nii([proj.path.betas.fmri_ex_beta,subj_study,'_',name,'_lss.nii']);
+        brain_size = size(base_nii.img);
+        
+        %% Vectorize the base image
+        base_img = vec_img_2d_nii(base_nii);
+        base_img = reshape(base_img,brain_size(1)*brain_size(2)*brain_size(3),brain_size(4));
+        
+        %% Concatenate the MASKED base image
+        subj_img = base_img(in_brain,:)';
+        
+        %% Concatenate all label/subj identifiers
+        subj_id = repmat(id,numel(v_label),1);
+        subj_i = repmat(i,numel(v_label),1);
+        
+        %% Subselect extrinsic data
+        ex_id = find(label_id==proj.param.trg.ex_id);
+        ex_img = subj_img(ex_id,:);
+        ex_subj_id = subj_id(ex_id,1);
+        ex_v_label = v_label(ex_id,1);
+        ex_a_label = a_label(ex_id,1);
+        
+        %% Perform Gram-Schmidt on data
+        [~,ex_img] = gram_schmidt(ex_img);
+        
+        %% Peform quality check of generated features
+        qlty = check_gs_img_qlty(ex_img);
+        
+        if(qlty.ok)
             
-            %% Fit the data space
-            [~,~,v_tst_hd,~,v_cls_stats] = classify_loocv(ex_img, ...
-                                                          ex_v_label,ex_subj_id,id, proj.param.mvpa.kernel);
+            %% Initialize the prediction structure of this subject
+            prds = struct();
+            prds.v_cls_acc = [];
+            prds.v_cls_hd = [];
+            prds.a_cls_acc = [];
+            prds.a_cls_hd = [];
             
-            %% Store results
-            prds.v_cls_acc = [prds.v_cls_acc;cell2mat(v_cls_stats.tst_acc)];
-            prds.v_cls_hd = [prds.v_cls_hd;v_tst_hd'];
+            %% ----------------------------------------
+            %% Classify extrinsic VALENCE examples
+            for j=1:proj.param.mvpa.n_resamp
+                
+                %% Fit the data space
+                [~,~,v_tst_hd,~,v_cls_stats] = classify_loocv(ex_img, ...
+                                                              ex_v_label,ex_subj_id,id, proj.param.mvpa.kernel);
+                
+                %% Store results
+                prds.v_cls_acc = [prds.v_cls_acc;cell2mat(v_cls_stats.tst_acc)];
+                prds.v_cls_hd = [prds.v_cls_hd;v_tst_hd'];
+                
+            end
             
+            
+            % debug
+            all_v_cls_acc = [all_v_cls_acc;mean(mean(prds.v_cls_acc,1))];
+            logger(['  v acc: ',num2str(mean(mean(prds.v_cls_acc,2)))],proj.path.logfile);
+            
+            %% ----------------------------------------
+            %% Classify extrinsic AROUSAL examples
+            for j=1:proj.param.mvpa.n_resamp
+                
+                %% Fit the data space            
+                [~,~,a_tst_hd,~,a_cls_stats] = classify_loocv(ex_img, ...
+                                                              ex_a_label,ex_subj_id,id, proj.param.mvpa.kernel);
+                
+                %% Store results
+                prds.a_cls_acc = [prds.a_cls_acc;cell2mat(a_cls_stats.tst_acc)];
+                prds.a_cls_hd = [prds.a_cls_hd;a_tst_hd'];
+                
+            end
+            
+            %% ----------------------------------------
+            %% Save out results
+            save([proj.path.mvpa.fmri_ex_gs_cls,subj_study,'_',name,'_prds.mat'],'prds');
+            
+            % debug
+            all_a_cls_acc = [all_a_cls_acc;mean(mean(prds.a_cls_acc,1))];
+            logger(['  a acc: ',num2str(mean(mean(prds.a_cls_acc,2)))],proj.path.logfile);
+
+        else
+            disp(['   MVPA Error: ex_img failed quality check']);
         end
 
-
-        % debug
-        all_v_cls_acc = [all_v_cls_acc;mean(mean(prds.v_cls_acc,1))];
-        logger(['  v acc: ',num2str(mean(mean(prds.v_cls_acc,2)))],proj.path.logfile);
-
-        %% ----------------------------------------
-        %% Classify extrinsic AROUSAL examples
-        for j=1:proj.param.mvpa.n_resamp
-
-            %% Fit the data space            
-            [~,~,a_tst_hd,~,a_cls_stats] = classify_loocv(ex_img, ...
-                                                          ex_a_label,ex_subj_id,id, proj.param.mvpa.kernel);
-            
-            %% Store results
-            prds.a_cls_acc = [prds.a_cls_acc;cell2mat(a_cls_stats.tst_acc)];
-            prds.a_cls_hd = [prds.a_cls_hd;a_tst_hd'];
-            
-        end
-
-        %% ----------------------------------------
-        %% Save out results
-        save([proj.path.mvpa.fmri_ex_gs_cls,subj_study,'_',name,'_prds.mat'],'prds');
-
-        % debug
-        all_a_cls_acc = [all_a_cls_acc;mean(mean(prds.a_cls_acc,1))];
-        logger(['  a acc: ',num2str(mean(mean(prds.a_cls_acc,2)))],proj.path.logfile);
-
+    catch
+        disp(['   MVPA Error: possible missing beta series']);
     end
 
 end

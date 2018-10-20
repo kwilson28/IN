@@ -44,76 +44,82 @@ for i = 1:numel(subjs)
     %% debug
     logger([subj_study,':',name],proj.path.logfile);
 
-    %% Load gray matter mask 
-    gm_nii = load_nii([proj.path.gm_mask,subj_study,'.',name,'.gm.nii']);
-    mask = double(gm_nii.img);
-    brain_size=size(mask);
-    mask = reshape(mask,brain_size(1)*brain_size(2)*brain_size(3),1);
-    in_brain=find(mask==1);  
+    try
 
-    %% Load beta-series
-    base_nii = load_nii([proj.path.fmri_ex_beta,subj_study,'_',name,'_lss.nii']);
-    brain_size = size(base_nii.img);
-    
-    %% Vectorize the base image
-    base_img = vec_img_2d_nii(base_nii);
-    base_img = reshape(base_img,brain_size(1)*brain_size(2)*brain_size(3),brain_size(4));
-
-    %% Concatenate the MASKED base image
-    all_img = base_img(in_brain,:)';
-    
-    %% Concatenate all label/subj identifiers
-    subj_id = repmat(id,numel(v_label),1);
-    subj_i = repmat(i,numel(v_label),1);
-    
-    %% Subselect extrinsic data
-    ex_id = find(label_id==proj.param.ex_id);
-    ex_img = all_img(ex_id,:);
-    
-    %% Peform quality check of generated features
-    qlty = check_gm_img_qlty(ex_img);
-
-    if(qlty.ok)
-
-        %% ----------------------------------------
-        %% Train SCR
+        %% Load gray matter mask 
+        gm_nii = load_nii([proj.path.gm_mask,subj_study,'.',name,'.gm.nii']);
+        mask = double(gm_nii.img);
+        brain_size=size(mask);
+        mask = reshape(mask,brain_size(1)*brain_size(2)*brain_size(3),1);
+        in_brain=find(mask==1);  
         
-        %% Load SCR values
-        load([proj.path.scr_beta,subj_study,'_',name,'_ex_betas.mat']);
-
-        %% ****************************************
-        %% TICKET
-        %% Logic based on HRV fitting.  Rewrite 
-        %% properly for SCR resposne
-        %% ****************************************
-
-        %%Change name to handle missing SCR
-        scr_ex_img = ex_img;
-        scr_ex_betas = [ex_betas.ibi1;ex_betas.ibi2];
+        %% Load beta-series
+        base_nii = load_nii([proj.path.fmri_ex_beta,subj_study,'_',name,'_lss.nii']);
+        brain_size = size(base_nii.img);
         
-        %%Adjust training data to handle mising SCR
-        if(isempty(ex_betas.ibi1)
-            scr_ex_img = ex_img(46:90,:); 
+        %% Vectorize the base image
+        base_img = vec_img_2d_nii(base_nii);
+        base_img = reshape(base_img,brain_size(1)*brain_size(2)*brain_size(3),brain_size(4));
+        
+        %% Concatenate the MASKED base image
+        all_img = base_img(in_brain,:)';
+        
+        %% Concatenate all label/subj identifiers
+        subj_id = repmat(id,numel(v_label),1);
+        subj_i = repmat(i,numel(v_label),1);
+        
+        %% Subselect extrinsic data
+        ex_id = find(label_id==proj.param.ex_id);
+        ex_img = all_img(ex_id,:);
+        
+        %% Peform quality check of generated features
+        qlty = check_gm_img_qlty(ex_img);
+        
+        if(qlty.ok)
+            
+            %% ----------------------------------------
+            %% Train SCR
+            
+            %% Load SCR values
+            load([proj.path.scr_beta,subj_study,'_',name,'_ex_betas.mat']);
+            
+            %% ****************************************
+            %% TICKET
+            %% Logic based on HRV fitting.  Rewrite 
+            %% properly for SCR resposne
+            %% ****************************************
+            
+            %%Change name to handle missing SCR
+            scr_ex_img = ex_img;
+            scr_ex_betas = [ex_betas.ibi1;ex_betas.ibi2];
+            
+            %%Adjust training data to handle mising SCR
+            if(isempty(ex_betas.ibi1)
+                scr_ex_img = ex_img(46:90,:); 
+            end
+            
+            if(isempty(ex_betas.ibi2)
+                scr_ex_img = ex_img(1:45,:);  
+            end
+            
+            %% ****************************************
+            %% Remove hardcoding of the indices covered
+            %% by runs 1 and 2 of the extrinsic stimuli
+            %%
+            %% TICKET
+            %% ****************************************
+            
+            %% Fit model
+            scr_model = fitrsvm(hrv_ex_img,hrv_ex_betas,'KernelFunction',proj.param.mvpa_kernel);
+            
+            %% Save model
+            save([proj.path.mvpa_frmi_ex_gm_rgr_scr,subj_study,'_', ...
+                  name,'_ex_gm_rgr_scr_model.mat'],'scr_model');
+            
         end
         
-        if(isempty(ex_betas.ibi2)
-            scr_ex_img = ex_img(1:45,:);  
-        end
-
-        %% ****************************************
-        %% Remove hardcoding of the indices covered
-        %% by runs 1 and 2 of the extrinsic stimuli
-        %%
-        %% TICKET
-        %% ****************************************
-        
-        %% Fit model
-        scr_model = fitrsvm(hrv_ex_img,hrv_ex_betas,'KernelFunction',proj.param.mvpa_kernel);
-
-        %% Save model
-        save([proj.path.mvpa_frmi_ex_gm_rgr_scr,subj_study,'_', ...
-              name,'_ex_gm_rgr_scr_model.mat'],'scr_model');
-
+    catch
+        disp(['   MVPA Error: possible missing beta series']);
     end
 
 end
