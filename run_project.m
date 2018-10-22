@@ -32,15 +32,15 @@ init_project;
 % %%  fMRI data
 % preprocess_fmri;
 % preprocess_mask;
-% % - preprocess_fd;
+% % - preprocess_fd (TBD);
 % 
 % %% Physio data
 % preprocess_scr; 
-% - preprocess_hrv; 
-% - preprocess_emg;
+% - preprocess_hrv (TBD); 
+% - preprocess_emg (TBD);
 %  
 % %% Cognitive data
-% % - preprocess_cog;
+% % - preprocess_cog (TBD);
 % 
 % %% ------------------------------------------------------------
 % %% STEP 4: Format Extrinsic Stimuli Design
@@ -54,7 +54,7 @@ init_project;
 %  
 % %% Physio beta-series
 % calc_scr_ex_beta;
-% - calc_emg_ex_beta;
+% - calc_emg_ex_beta (TBD);
 % 
 % %% ------------------------------------------------------------
 % %% STEP 6: Conduct MVPA for Extrinsic Stimuli of Sys. I.D.
@@ -96,16 +96,23 @@ init_project;
 % %% STEP 10: Compute IN Cognitive Dynamics
 % dynamics_fmri_in_gm;
 % 
+%% ------------------------------------------------------------ 
+%% STEP 11: Analysis of IN performance
+plot_er_skill_summary;
+plot_er_dyna_summary;
+
+
 % %% ------------------------------------------------------------ 
-% %% STEP 11: Analysis of IN performance
-% plot_er_skill_summary;
-% 
-% %% ------------------------------------------------------------ 
-% %% STEP 12: Secondary Analysis of SCR (Scientific Reports paper)
+% %% STEP 12: Secondary Analysis of SCR (SciReports 2018 paper)
 % analyze_ex_scr;
 % 
 % %% ------------------------------------------------------------ 
-% %% STEP 13: Hyperplane analysis
+% %% STEP 13: Hyperplane analysis (SciReports 2018 paper)
 % % TBD
+
+% %% ------------------------------------------------------------ 
+% %% STEP 14: Stimulus adjusted performance (Frontiers 2018 paper)
+% % TBD
+
 
 toc

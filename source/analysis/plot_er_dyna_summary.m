@@ -13,7 +13,7 @@ load('proj.mat');
 
 %% Initialize log section
 logger(['*************************************************'],proj.path.logfile);
-logger(['Plotting  Stim vs Feel figure                    '],proj.path.logfile);
+logger(['Plotting "Feel" dynamics                         '],proj.path.logfile);
 logger(['*************************************************'],proj.path.logfile);
 
 %% ----------------------------------------
@@ -25,8 +25,8 @@ set(gcf,'color','w');
 
 %% ----------------------------------------
 %% scatter the underlying stim and feel
-indv_b = [];
-indv_sort_stim = [];
+mu_traj_v = [];
+max_traj_dv = [];
 
 for i = 1:numel(subjs)
 
@@ -48,21 +48,9 @@ for i = 1:numel(subjs)
 
     if(isfield(prds,'v_dcmp'))
 
-        %% extract stims and mean "feel"
-        stim = prds.v_dcmp.stim;
-        indv_sort_stim = [indv_sort_stim; sort(stim')];
-        feel = mean(prds.v_dcmp.feel,2);
+        traj_v = prds.v_dcmp.h-prds.v_dcmp.h(:,1);
+        mu_traj_v = [mu_traj_v;median(traj_v)];
 
-        %% scatter plot specific points        
-        scatter(stim,feel,10,'MarkerFaceColor', ...
-                proj.param.plot.white,'MarkerEdgeColor', ...
-                proj.param.plot.light_grey);
-        hold on;
-
-        %% robust fit
-        [b stat] = robustfit(stim,feel);
-        indv_b = [indv_b;b'];
-        
     else
         disp(['  -Could not find v_dcmp for: ',subj_study,'_',name],proj.path.logfile);
     end
@@ -71,29 +59,33 @@ end
 
 %% ----------------------------------------
 %% overlay the individual VR skill plots
-for i = 1:size(indv_sort_stim,1)
-
-    plot(indv_sort_stim(i,:),indv_sort_stim(i,:)*indv_b(i,2)+ ...
-         indv_b(i,1),'Color',proj.param.plot.dark_grey,'LineWidth',2);
+for i = 1:size(mu_traj_v,1)
+    plot(1:size(mu_traj_v,2),mu_traj_v(i,:),'Color',proj.param.plot.dark_grey,'LineWidth',2);
     hold on;
-
 end
 
 %% ----------------------------------------
 %% overlay VR goal
-vseq = linspace(-3,3);
-plot(vseq,vseq,'k:','LineWidth',2)
+vseq = linspace(0,size(mu_traj_v,2));
+plot(vseq,0*vseq,'k:','LineWidth',2)
 hold on;
 
 %% ----------------------------------------
-%% overlay the group VR skill plot
-plot(vseq,vseq*mean(indv_b(:,2))+mean(indv_b(:,1)),'r-','LineWidth',3);
-hold off
+%% overlay VR phases
+vseq = linspace(-1,1);
+plot(0*vseq+1,vseq,'k-','LineWidth',2)
+hold on;
+
+plot(0*vseq+2,vseq,'k-','LineWidth',2)
+hold on;
+
+plot(0*vseq+6,vseq,'k-','LineWidth',2)
+hold on;
 
 %% ----------------------------------------
 %% format figure
-xlim([-3,3]);
-ylim([-2,2]);
+xlim([0,size(mu_traj_v,2)]);
+ylim([-1,1]);
 hold off;
 fig = gcf;
 ax = fig.CurrentAxes;
@@ -101,12 +93,12 @@ ax.FontSize = proj.param.plot.axisLabelFontSize;
 
 %% ----------------------------------------
 %% explot hi-resolution figure
-export_fig 'ER_v_skill_summary.png' -r300  
-eval(['! mv ',proj.path.code,'ER_v_skill_summary.png ',proj.path.fig]);
-
-%% ****************************************
-%% TICKET
-%% ****************************************
-%% Cannot figure out how to use -r<resolution> flag with the
-%% functional syntax form of the export_fig command, which is
-%% requiring me to to write to local directory and move (above)
+export_fig 'ER_v_dyna_summary.png' -r300  
+eval(['! mv ',proj.path.code,'ER_v_dyna_summary.png ',proj.path.fig]);
+% 
+% %% ****************************************
+% %% TICKET
+% %% ****************************************
+% %% Cannot figure out how to use -r<resolution> flag with the
+% %% functional syntax form of the export_fig command, which is
+% %% requiring me to to write to local directory and move (above)

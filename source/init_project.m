@@ -214,6 +214,7 @@ proj.param.haufe.chunk = 10;
 proj.param.plot.axisLabelFontSize = 18;
 proj.param.plot.circleSize = 10;
 proj.param.plot.white = [1,1,1];
+proj.param.plot.very_light_grey = [.9,.9,.9];
 proj.param.plot.light_grey = [.8,.8,.8];
 proj.param.plot.dark_grey = [.6,.6,.6];
 proj.param.plot.axis_nudge = 0.1;
