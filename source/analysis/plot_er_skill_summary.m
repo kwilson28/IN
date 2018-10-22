@@ -11,6 +11,11 @@
 %% Load in path data
 load('proj.mat');
 
+%% Initialize log section
+logger(['*************************************************'],proj.path.logfile);
+logger(['Plotting  Stim vs Feel figure                    '],proj.path.logfile);
+logger(['*************************************************'],proj.path.logfile);
+
 %% plot parameters
 axisLabelFontSize = 18;
 circleSize = 10;
@@ -37,15 +42,15 @@ for i = 1:numel(subjs)
     name = subjs{i}.name;
     id = subjs{i}.id;
 
-    % debug
-    disp([subj_study,'_',name]);
+    % log analysis of subject
+    logger([subj_study,'_',name],proj.path.logfile);
 
     try
         %% Load IN trajectory structures
         load([proj.path.ctrl.in_ctrl,subj_study,'_',name,'_prds.mat']);
     catch
         % do nothing
-        disp(['Could not find load prds for: ',subj_study,'_',name]);
+        logger(['  -Could not find load prds for: ',subj_study,'_',name],proj.path.logfile);
     end
 
     if(isfield(prds,'v_dcmp'))
@@ -64,7 +69,7 @@ for i = 1:numel(subjs)
         indv_b = [indv_b;b'];
         
     else
-        disp(['Could not find v_dcmp for: ',subj_study,'_',name]);;
+        disp(['  -Could not find v_dcmp for: ',subj_study,'_',name],proj.path.logfile);
     end
 
 end
@@ -107,4 +112,5 @@ eval(['! mv ',proj.path.code,'ER_v_skill_summary.png ',proj.path.fig]);
 %% TICKET
 %% ****************************************
 %% Cannot figure out how to use -r<resolution> flag with the
-%% functional syntax form of the export_fig command
+%% functional syntax form of the export_fig command, which is
+%% requiring me to to write to local directory and move (above)

@@ -59,9 +59,12 @@ end
 %% Should rewrite this whole system in terms of tasks and runs
 %% to make it more flexible and general
 
-
 %% load subjs
 subjs = load_subjs(proj);
+
+logger(['************************************************'],proj.path.logfile);
+logger(['Calculating SCR beta-series of ',num2str(numel(subjs)),' subjects'],proj.path.logfile);
+logger(['************************************************'],proj.path.logfile);
 
 grp_betas = [];
 
@@ -72,7 +75,7 @@ for i=1:numel(subjs)
     name = subjs{i}.name;
 
     %% debug
-    disp([subj_study,':',name]);
+    logger([subj_study,':',name],proj.path.logfile);
 
     %% Initialize scr beta structure
     ex_betas = struct();
@@ -109,7 +112,7 @@ for i=1:numel(subjs)
         ex_betas.id1 = zscore(ex_betas.id1);
 
     catch
-        disp(['LSS Error: SCR of Identify run 1: ',path]);
+        logger(['  -LSS Error: SCR of Identify run 1: ',path],proj.path.logfile);
     end
 
     %% ----------------------------------------
@@ -130,7 +133,7 @@ for i=1:numel(subjs)
        ex_betas.id2 = zscore(ex_betas.id2);
 
     catch
-        disp(['LSS Error: SCR of Identify run 2: ',path]);
+        logger(['  -LSS Error: SCR of Identify run 2: ',path],proj.path.logfile);
     end
 
     %% ----------------------------------------

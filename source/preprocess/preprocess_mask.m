@@ -21,7 +21,11 @@ end
 
 %% Create the subjects to be analyzed (possible multiple studies)
 subjs = load_subjs(proj);
-disp(['Processing fMRI of ',num2str(numel(subjs)),' subjects']);
+
+logger(['****************************************'],proj.path.logfile);
+logger(['Processing GM Mask of ',num2str(numel(subjs)),[' ' ...
+                    'subjects'],proj.path.logfile);
+logger(['****************************************'],proj.path.logfile);
 
 %%========================================
 %% Convert AFNI to NIFTI
@@ -33,7 +37,7 @@ for i=1:numel(subjs)
     name = subjs{i}.name;
 
     %% debug
-    disp([subj_study,':',name]);
+    logger([subj_study,':',name],proj.path.logfile);
 
     in_path = [proj.path.mri.mri_clean,subj_study,'_',name,'/anat/', ...
                subj_study,'.',name,'.anat.seg.fsl.MNI.GM+tlrc'];
@@ -94,7 +98,7 @@ final_gm_mask=rri_orient(final_gm_mask,orient);%silently swear at jimmy shen
 
 %%Test of number of GM voxels  (30K-50K)
 gm_vec = vec_img_2d_nii(final_gm_mask);
-disp(['Num. GM voxels: ',num2str(sum(gm_vec)),', should be 30K-50K.']);
+logger(['Num. GM voxels: ',num2str(sum(gm_vec)),', should be 30K-50K.'],proj.path.logfile);
 
 %% Save out grey-matter
 save_nii(final_gm_mask,[proj.path.mri.gm_mask,'/group_gm_mask.nii']);

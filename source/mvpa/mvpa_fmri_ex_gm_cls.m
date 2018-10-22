@@ -189,16 +189,16 @@ for i = 1:numel(subjs)
         end
         
     catch
-        disp(['   MVPA Error: possible missing beta series']);
+        logger(['  -MVPA Error: possible missing beta series'],proj.path.logfile);
     end
 
 end
 
 % log summary results
 [h p ci stat] = ttest(all_v_cls_acc);
-logger(['grp v acc ci=[',num2str(ci(1)),',',num2str(ci(2)),['], ' ...
+logger(['  grp v acc ci=[',num2str(ci(1)),',',num2str(ci(2)),['], ' ...
                     'p='],num2str(p)],proj.path.logfile);
 
 [h p ci stat] = ttest(all_a_cls_acc);
-logger(['grp a acc ci=[',num2str(ci(1)),',',num2str(ci(2)),['], ' ...
+logger(['g  rp a acc ci=[',num2str(ci(1)),',',num2str(ci(2)),['], ' ...
                     'p='],num2str(p)],proj.path.logfile);

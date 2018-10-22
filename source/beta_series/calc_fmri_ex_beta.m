@@ -23,6 +23,10 @@ end
 %% load subjs
 subjs = load_subjs(proj);
 
+logger(['************************************************'],proj.path.logfile);
+logger(['Calculating fMRI beta-series (EX) of ',num2str(numel(subjs)),' subjects'],proj.path.logfile);
+logger(['************************************************'],proj.path.logfile);
+
 for i=1:numel(subjs)
     
     %% extract subject info
@@ -30,9 +34,8 @@ for i=1:numel(subjs)
     name = subjs{i}.name;
     task = 'identify';  %%% HARDCODED FOR THIS STEP *** TICKET ****
 
-    %% debug
-    disp(['**************************']);
-    disp([subj_study,':',name]);
+    %% log
+    logger([subj_study,':',name],proj.path.logfile);
 
     %% ----------------------------------------
     %% Load and concatenate censor files (save to tmp)

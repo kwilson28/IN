@@ -21,7 +21,10 @@ end
 
 %% Create the subjects to be analyzed
 subjs = load_subjs(proj);
-disp(['Processing SCR of ',num2str(numel(subjs)),' subjects']);
+
+logger(['************************************'],proj.path.logfile);
+logger(['Processing SCR of ',num2str(numel(subjs)),' subjects'],proj.path.logfile);
+logger(['************************************'],proj.path.logfile);
 
 for i=1:numel(subjs)
 
@@ -30,8 +33,8 @@ for i=1:numel(subjs)
     subj_id = subjs{i}.id;
     name = subjs{i}.name;
 
-    %% debug
-    disp([subj_study,':',name]);
+    %% logging
+    logger([subj_study,':',name],proj.path.logfile);
 
     %% Define input/outputs paths
     in_path = [proj.path.raw_data,subj_study,'/',proj.path.raw_physio,'/'];
@@ -52,7 +55,7 @@ for i=1:numel(subjs)
         save([out_path,subj_study,'_',name,'_',proj.path.task.name_id1,'.mat'],'scr');
 
     catch
-        disp(['Processing Error: SCR of Identify run 1: ',path]);
+        logger(['  -Processing Error: SCR of Identify run 1: ',path],proj.path.logfile);
     end
 
     %% ----------------------------------------
@@ -68,7 +71,7 @@ for i=1:numel(subjs)
         %% save scr
         save([out_path,subj_study,'_',name,'_',proj.path.task.name_id2,'.mat'],'scr');
     catch
-        disp(['Processing Error: SCR of Identify run 2: ',path]);
+        logger(['  -Processing Error: SCR of Identify run 2: ',path],proj.path.logfile);
     end
 
     %% ----------------------------------------
@@ -84,8 +87,7 @@ for i=1:numel(subjs)
         %% save scr
         save([out_path,subj_study,'_',name,'_',proj.path.task.name_rest,'.mat'],'scr');
     catch
-        disp(['Processing Error: SCR of Rest: ',path]);
+        logger(['  -Processing Error: SCR of Rest: ',path],proj.path.logfile);
     end
-
 
 end

@@ -21,7 +21,10 @@ end
 
 %% Create the subjects to be analyzed (possible multiple studies)
 subjs = load_subjs(proj);
-disp(['Processing fMRI of ',num2str(numel(subjs)),' subjects']);
+
+logger(['************************************'],proj.path.logfile);
+logger(['Prepocessing fMRI of ',num2str(numel(subjs)),' subjects'],proj.path.logfile);
+logger(['************************************'],proj.path.logfile);
 
 %% Preprocess fMRI of each subject in subjects list 
 for i=1:numel(subjs)
@@ -47,7 +50,7 @@ for i=1:numel(subjs)
     name = subjs{i}.name;
 
     %% debug
-    disp([subj_study,':',name]);
+    logger([subj_study,':',name],proj.path.logfile);
 
     %% Get data from raw and formatted into the correct name convention
     dlmwrite([proj.path.code,'tmp/study.txt'],subj_study,'');

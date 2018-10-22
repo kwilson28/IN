@@ -11,6 +11,11 @@
 %% Load in path data
 load('proj.mat');
 
+%% Initialize log section
+logger(['*************************************************'],proj.path.logfile);
+logger(['Analyzing SCR responses to EX stimuli            '],proj.path.logfile);
+logger(['*************************************************'],proj.path.logfile);
+
 %% plot parameters
 axisLabelFontSize = 18;
 circleSize = 10;
@@ -49,12 +54,12 @@ for i = 1:numel(subjs)
     id = subjs{i}.id;
 
     % debug
-    disp([subj_study,'_',name]);
+    logger([subj_study,'_',name],proj.path.logfile);
 
     try
         load([proj.path.betas.scr_beta,subj_study,'_',name,'_ex_betas.mat']);
     catch
-        disp('    Could not find scr beta file for processing.');
+        logger('    Could not find scr beta file for processing.',proj.path.logfile);
     end
 
     scr_betas = [ex_betas.id1,ex_betas.id2];
@@ -75,18 +80,23 @@ for i = 1:numel(subjs)
     %% TICKET
     %% ****************************************
 
-    %% scatter plot specific points        
-    scatter(scr_betas,scr_a_score,10,'MarkerFaceColor',white,'MarkerEdgeColor',light_grey);
-    hold on;
+    if(~isempty(scr_betas))
+
+        %% scatter plot specific points        
+        scatter(scr_betas,scr_a_score,10,'MarkerFaceColor',white,'MarkerEdgeColor',light_grey);
+        hold on;
         
-    %% robust fit
-    [b stat] = robustfit(scr_betas,scr_a_score);
-    indv_b = [indv_b;b'];
-    disp(stat.p(2))
-    
-    plot(sort(scr_betas),sort(scr_betas)*b(2)+b(1),'r-');
+        %% robust fit
+        [b stat] = robustfit(scr_betas,scr_a_score);
+        indv_b = [indv_b;b'];
+        disp(stat.p(2))
         
+        plot(sort(scr_betas),sort(scr_betas)*b(2)+b(1),'r-');
+        
+    end
+
 end
 
 [h p ci stat] = ttest(indv_b(:,2));
-disp(['b ci=[',num2str(ci(1)),' ',num2str(ci(2)),']']);
+disp(['***EX response beta ci=[',num2str(ci(1)),' ',num2str(ci(2)),['], ' ...
+                    'p='],num2str(p),'***']);

@@ -141,11 +141,11 @@ for i = 1:numel(subjs)
             logger(['  a acc: ',num2str(mean(mean(prds.a_cls_acc,2)))],proj.path.logfile);
 
         else
-            disp(['   MVPA Error: ex_img failed quality check']);
+            logger(['  -MVPA Error: ex_img failed quality check'],proj.path.logfile);
         end
 
     catch
-        disp(['   MVPA Error: possible missing beta series']);
+        logger(['  -MVPA Error: possible missing beta series'],proj.path.logfile);
     end
 
 end
